@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-surface-default: 0 0% 100%;
+    --color-surface-raised: 0 0% 96%;
+    --color-surface-overlay: 0 0% 100%;
+    --color-text-primary: 0 0% 0%;
+    --color-text-secondary: 0 0% 38%;
+    --color-text-disabled: 0 0% 68%;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-surface-default: 0 0% 8%;
+      --color-surface-raised: 0 0% 12%;
+      --color-surface-overlay: 0 0% 16%;
+      --color-text-primary: 0 0% 100%;
+      --color-text-secondary: 0 0% 70%;
+      --color-text-disabled: 0 0% 45%;
+    }
+  }
+
+  body {
+    @apply bg-surface-default text-text-primary transition-colors;
+  }
+}
