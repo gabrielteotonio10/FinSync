@@ -29,3 +29,9 @@ export { Spinner, spinnerVariants } from './Spinner/Spinner'
 
 // Theme
 export { ThemeSwitcher } from './ThemeSwitcher'
+
+// Finance Components
+export { MonetaryValue } from './Finance/MonetaryValue'
+export { TransactionItem } from './Finance/TransactionItem'
+export { CreditCard } from './Finance/CreditCard'
+export { BudgetCard } from './Finance/BudgetCard'
