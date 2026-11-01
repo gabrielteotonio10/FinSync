@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { cn } from '@/lib/utils'
+import { cn, formatCurrency } from '@/lib/utils'
 
 interface CreditCardProps extends React.HTMLAttributes<HTMLDivElement> {
   cardholderName: string
@@ -24,47 +24,54 @@ const CreditCard = forwardRef<HTMLDivElement, CreditCardProps>(
     },
     ref
   ) => {
-    const expiryDisplay = `${String(expiryMonth).padStart(2, '0')}/${expiryYear % 100}`
+    const expiryDisplay = `${String(expiryMonth).padStart(2, '0')}/${String(expiryYear % 100).padStart(2, '0')}`
 
     return (
       <div
         ref={ref}
         className={cn(
-          'w-full max-w-sm rounded-xl p-lg text-white shadow-lg',
-          'bg-gradient-to-br from-[var(--semantic-light-color-action-primary)] to-[var(--semantic-light-color-action-primary-hover)]',
-          'aspect-video flex flex-col justify-between',
+          'relative w-full max-w-(--container-sm) overflow-hidden rounded-lg p-lg text-white shadow-lg',
+          'bg-linear-to-br from-[var(--primitives-color-primary-800)] via-[var(--primitives-color-primary-700)] to-[var(--primitives-color-primary-600)]',
+          'flex aspect-[1.586] flex-col justify-between',
           className
         )}
         {...props}
       >
-        {/* Top: Issuer */}
-        <div className="flex justify-between items-start">
-          <span className="text-sm font-semibold opacity-75">{cardIssuer}</span>
-          <span className="text-sm">💳</span>
+        {/* Decorative glow */}
+        <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-white/10 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-20 -left-10 size-48 rounded-full bg-[var(--primitives-color-primary-400)]/20 blur-2xl" />
+
+        {/* Top: Issuer + balance */}
+        <div className="relative flex items-start justify-between">
+          <div>
+            {balance !== undefined && (
+              <>
+                <p className="text-xs text-white/60">Current balance</p>
+                <p className="text-xl font-semibold tabular-nums tracking-tight">
+                  {formatCurrency(balance)}
+                </p>
+              </>
+            )}
+          </div>
+          <span className="text-sm font-semibold italic tracking-wide text-white/90">{cardIssuer}</span>
         </div>
 
-        {/* Middle: Card Number (Last 4) */}
-        <div className="flex items-center gap-md">
-          <div className="flex gap-sm">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex gap-xs">
-                {[...Array(4)].map((_, j) => (
-                  <div key={j} className="w-2 h-2 rounded-full bg-white opacity-40" />
-                ))}
-              </div>
-            ))}
-          </div>
-          <span className="text-lg font-mono font-bold">{cardNumber}</span>
+        {/* Middle: chip + number */}
+        <div className="relative space-y-sm">
+          <div className="h-7 w-10 rounded-[5px] bg-linear-to-br from-amber-200 to-amber-400 opacity-90" />
+          <p className="font-mono text-base tracking-[0.12em] text-white/90">
+            •••• •••• •••• {cardNumber}
+          </p>
         </div>
 
         {/* Bottom: Cardholder & Expiry */}
-        <div className="flex justify-between items-end">
+        <div className="relative flex items-end justify-between">
           <div>
-            <p className="text-xs opacity-75">Cardholder</p>
-            <p className="font-semibold text-sm">{cardholderName}</p>
+            <p className="text-[10px] uppercase tracking-wider text-white/60">Cardholder</p>
+            <p className="text-sm font-medium">{cardholderName}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs opacity-75">Expiry</p>
+            <p className="text-[10px] uppercase tracking-wider text-white/60">Expires</p>
             <p className="font-mono text-sm">{expiryDisplay}</p>
           </div>
         </div>

@@ -13,8 +13,8 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
         type="radio"
         id={id}
         className={cn(
-          'w-5 h-5 rounded-full border border-[var(--semantic-light-color-border-default)] cursor-pointer accent-[var(--semantic-light-color-action-primary)] transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--semantic-light-color-border-focus)] focus-visible:ring-offset-2',
+          'w-5 h-5 rounded-full border border-border cursor-pointer accent-primary transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           'disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
@@ -23,7 +23,7 @@ const Radio = forwardRef<HTMLInputElement, RadioProps>(
       {label && (
         <label
           htmlFor={id}
-          className="text-sm font-medium cursor-pointer select-none text-[var(--semantic-light-color-text-primary)]"
+          className="text-sm font-medium cursor-pointer select-none text-foreground"
         >
           {label}
         </label>

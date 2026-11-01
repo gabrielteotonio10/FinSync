@@ -1,21 +1,22 @@
-import { Moon, Sun } from 'lucide-react'
+import { Monitor, Moon, Sun } from 'lucide-react'
 import { useTheme } from '@/hooks/useTheme'
+import { Button } from './Button/Button'
+
+const icons = { light: Sun, dark: Moon, system: Monitor }
 
 export function ThemeSwitcher() {
   const { theme, toggleTheme } = useTheme()
+  const Icon = icons[theme]
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="icon"
       onClick={toggleTheme}
-      className="p-md rounded-md hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
-      title={`Current theme: ${theme}`}
-      aria-label="Toggle theme"
+      title={`Theme: ${theme}`}
+      aria-label={`Toggle theme (current: ${theme})`}
     >
-      {theme === 'dark' ? (
-        <Sun className="w-5 h-5" />
-      ) : (
-        <Moon className="w-5 h-5" />
-      )}
-    </button>
+      <Icon />
+    </Button>
   )
 }

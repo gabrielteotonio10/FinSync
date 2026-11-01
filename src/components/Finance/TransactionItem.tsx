@@ -1,11 +1,12 @@
 import { forwardRef, ReactNode } from 'react'
+import { Check, Clock, Receipt, X } from 'lucide-react'
 import { Badge } from '../Badge/Badge'
-import { Avatar } from '../Avatar/Avatar'
 import { MonetaryValue } from './MonetaryValue'
+import { cn } from '@/lib/utils'
 
 interface TransactionItemProps extends React.HTMLAttributes<HTMLDivElement> {
   category: string
-  categoryIcon?: string
+  categoryIcon?: ReactNode
   description: string
   amount: number
   type: 'income' | 'expense'
@@ -13,17 +14,17 @@ interface TransactionItemProps extends React.HTMLAttributes<HTMLDivElement> {
   date?: string
 }
 
-const statusVariants = {
-  pending: 'warning',
-  completed: 'success',
-  failed: 'error',
+const statusConfig = {
+  pending: { variant: 'warning', label: 'Pending', Icon: Clock },
+  completed: { variant: 'success', label: 'Completed', Icon: Check },
+  failed: { variant: 'error', label: 'Failed', Icon: X },
 } as const
 
 const TransactionItem = forwardRef<HTMLDivElement, TransactionItemProps>(
   (
     {
       category,
-      categoryIcon = '📝',
+      categoryIcon = <Receipt />,
       description,
       amount,
       type,
@@ -34,41 +35,51 @@ const TransactionItem = forwardRef<HTMLDivElement, TransactionItemProps>(
     },
     ref
   ) => {
+    const statusInfo = status ? statusConfig[status] : null
+
     return (
       <div
         ref={ref}
-        className="flex items-center gap-md p-md rounded-md border border-[var(--semantic-light-color-border-default)] hover:bg-[var(--semantic-light-color-surface-raised)] transition-colors"
+        className={cn(
+          'flex items-center gap-md px-lg py-md transition-colors hover:bg-surface-muted/60',
+          className
+        )}
         {...props}
       >
-        {/* Icon/Avatar */}
-        <Avatar initials={categoryIcon} className="w-10 h-10" />
+        {/* Category icon */}
+        <div
+          className={cn(
+            'flex size-10 shrink-0 items-center justify-center rounded-sm text-lg [&_svg]:size-5',
+            type === 'income' ? 'bg-success/10 text-success' : 'bg-surface-muted text-muted'
+          )}
+        >
+          {categoryIcon}
+        </div>
 
         {/* Description */}
-        <div className="flex-1 min-w-0">
-          <p className="font-medium truncate">{description}</p>
-          <p className="text-sm text-[var(--semantic-light-color-text-secondary)]">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium text-foreground">{description}</p>
+          <p className="truncate text-xs text-muted">
             {category}
-            {date && ` • ${date}`}
+            {date && ` · ${date}`}
           </p>
         </div>
 
+        {/* Status */}
+        {statusInfo && (
+          <Badge variant={statusInfo.variant} className="hidden sm:inline-flex">
+            <statusInfo.Icon />
+            {statusInfo.label}
+          </Badge>
+        )}
+
         {/* Amount */}
-        <div className="text-right">
-          <MonetaryValue
-            value={type === 'income' ? amount : -amount}
-            type={type === 'income' ? 'income' : 'expense'}
-          />
-          {status && (
-            <Badge
-              variant={statusVariants[status]}
-              className="text-xs mt-xs w-full justify-center"
-            >
-              {status === 'pending' ? '⏳' : status === 'completed' ? '✓' : '✕'}
-              {' '}
-              {status}
-            </Badge>
-          )}
-        </div>
+        <MonetaryValue
+          value={type === 'income' ? amount : -amount}
+          type={type}
+          showSign
+          className="w-32 justify-end text-sm"
+        />
       </div>
     )
   }

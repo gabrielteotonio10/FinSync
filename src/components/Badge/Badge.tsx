@@ -3,19 +3,15 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const badgeVariants = cva(
-  'inline-flex items-center gap-xs px-md py-xs rounded-full font-medium text-sm',
+  'inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset [&_svg]:size-3',
   {
     variants: {
       variant: {
-        default:
-          'bg-[var(--semantic-light-color-surface-raised)] text-[var(--semantic-light-color-text-primary)] border border-[var(--semantic-light-color-border-default)]',
-        success:
-          'bg-[var(--semantic-light-color-feedback-success)]/10 text-[var(--semantic-light-color-feedback-success)] border border-[var(--semantic-light-color-feedback-success)]/20',
-        error:
-          'bg-[var(--semantic-light-color-feedback-error)]/10 text-[var(--semantic-light-color-feedback-error)] border border-[var(--semantic-light-color-feedback-error)]/20',
-        warning:
-          'bg-[var(--semantic-light-color-feedback-warning)]/10 text-[var(--semantic-light-color-feedback-warning)] border border-[var(--semantic-light-color-feedback-warning)]/20',
-        info: 'bg-[var(--semantic-light-color-action-primary)]/10 text-[var(--semantic-light-color-action-primary)] border border-[var(--semantic-light-color-action-primary)]/20',
+        default: 'bg-surface-muted text-muted ring-border',
+        success: 'bg-success/10 text-success ring-success/20',
+        error: 'bg-danger/10 text-danger ring-danger/20',
+        warning: 'bg-warning/10 text-warning ring-warning/25',
+        info: 'bg-primary-soft text-primary-soft-foreground ring-primary/20',
       },
     },
     defaultVariants: {

@@ -4,11 +4,12 @@ import { cn } from '@/lib/utils'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
+  /** Initial open state on mobile. Always visible from md up. */
   defaultOpen?: boolean
 }
 
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
-  ({ children, defaultOpen = true, className, ...props }, ref) => {
+  ({ children, defaultOpen = false, className, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(defaultOpen)
 
     return (
@@ -16,20 +17,17 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         {/* Mobile Toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="fixed top-4 left-4 z-50 md:hidden p-md rounded-md hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+          className="fixed left-3 top-3 z-50 flex size-10 items-center justify-center rounded-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground md:hidden"
           aria-label="Toggle sidebar"
+          aria-expanded={isOpen}
         >
-          {isOpen ? (
-            <X className="w-5 h-5" />
-          ) : (
-            <Menu className="w-5 h-5" />
-          )}
+          {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
 
         {/* Overlay */}
         {isOpen && (
           <div
-            className="fixed inset-0 bg-black/50 z-30 md:hidden"
+            className="fixed inset-0 z-30 bg-black/40 backdrop-blur-[1px] md:hidden"
             onClick={() => setIsOpen(false)}
             aria-hidden="true"
           />
@@ -39,11 +37,15 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         <aside
           ref={ref}
           className={cn(
-            'fixed md:sticky left-0 top-0 h-screen w-64 border-r border-[var(--semantic-light-color-border-default)] bg-[var(--semantic-light-color-surface-default)] overflow-y-auto transition-transform duration-300 z-40',
-            'flex flex-col',
-            !isOpen && '-translate-x-full md:translate-x-0',
+            'fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 flex-col border-r border-border bg-surface transition-transform duration-300',
+            'md:static md:translate-x-0',
+            !isOpen && '-translate-x-full',
             className
           )}
+          // Close the mobile drawer once a navigation link is chosen
+          onClickCapture={(e) => {
+            if ((e.target as HTMLElement).closest('a')) setIsOpen(false)
+          }}
           {...props}
         >
           {children}
@@ -63,7 +65,7 @@ const SidebarHeader = forwardRef<HTMLDivElement, SidebarHeaderProps>(
   ({ children, className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('p-lg border-b border-[var(--semantic-light-color-border-default)]', className)}
+      className={cn('flex h-16 shrink-0 items-center gap-sm border-b border-border px-lg', className)}
       {...props}
     >
       {children}
@@ -79,7 +81,7 @@ interface SidebarContentProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const SidebarContent = forwardRef<HTMLDivElement, SidebarContentProps>(
   ({ children, className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex-1 p-lg space-y-md', className)} {...props}>
+    <div ref={ref} className={cn('flex-1 space-y-lg overflow-y-auto px-md py-lg', className)} {...props}>
       {children}
     </div>
   )
@@ -87,13 +89,31 @@ const SidebarContent = forwardRef<HTMLDivElement, SidebarContentProps>(
 
 SidebarContent.displayName = 'SidebarContent'
 
+interface SidebarLabelProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children: ReactNode
+}
+
+const SidebarLabel = forwardRef<HTMLParagraphElement, SidebarLabelProps>(
+  ({ children, className, ...props }, ref) => (
+    <p
+      ref={ref}
+      className={cn('mb-sm px-sm text-xs font-medium uppercase tracking-wider text-subtle', className)}
+      {...props}
+    >
+      {children}
+    </p>
+  )
+)
+
+SidebarLabel.displayName = 'SidebarLabel'
+
 interface SidebarMenuProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
 }
 
 const SidebarMenu = forwardRef<HTMLDivElement, SidebarMenuProps>(
   ({ children, className, ...props }, ref) => (
-    <nav ref={ref} className={cn('space-y-xs', className)} {...props}>
+    <nav ref={ref} className={cn('space-y-1', className)} {...props}>
       {children}
     </nav>
   )
@@ -114,17 +134,18 @@ const SidebarMenuItem = forwardRef<HTMLAnchorElement, SidebarMenuItemProps>(
     <a
       ref={ref}
       href={href}
+      aria-current={active ? 'page' : undefined}
       className={cn(
-        'flex items-center gap-md px-md py-sm rounded-md transition-colors',
+        'flex items-center gap-sm rounded-sm px-sm py-2 text-sm font-medium transition-colors [&_svg]:size-[18px]',
         active
-          ? 'bg-[var(--semantic-light-color-action-primary)] text-white'
-          : 'text-[var(--semantic-light-color-text-primary)] hover:bg-[var(--semantic-light-color-surface-raised)]',
+          ? 'bg-primary-soft text-primary-soft-foreground'
+          : 'text-muted hover:bg-surface-muted hover:text-foreground',
         className
       )}
       {...props}
     >
-      {icon && <span className="flex-shrink-0">{icon}</span>}
-      <span className="flex-1 text-sm font-medium">{label}</span>
+      {icon && <span className="flex shrink-0">{icon}</span>}
+      <span className="flex-1">{label}</span>
     </a>
   )
 )
@@ -137,11 +158,7 @@ interface SidebarFooterProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const SidebarFooter = forwardRef<HTMLDivElement, SidebarFooterProps>(
   ({ children, className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('p-lg border-t border-[var(--semantic-light-color-border-default)]', className)}
-      {...props}
-    >
+    <div ref={ref} className={cn('shrink-0 border-t border-border p-md', className)} {...props}>
       {children}
     </div>
   )
@@ -149,4 +166,12 @@ const SidebarFooter = forwardRef<HTMLDivElement, SidebarFooterProps>(
 
 SidebarFooter.displayName = 'SidebarFooter'
 
-export { Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarFooter }
+export {
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarFooter,
+}

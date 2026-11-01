@@ -1,125 +1,162 @@
-import { Card, CardContent, CardHeader, Container, Section, Button, Input, Switch } from '@/components'
-import { H1, H2, Small } from '@/components/Typography/Typography'
-import { ChevronRight } from 'lucide-react'
+import { ReactNode } from 'react'
+import {
+  Avatar,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Container,
+  Input,
+  PageHeader,
+  Select,
+  Switch,
+} from '@/components'
+import { user } from '@/data/mock'
+import { cn } from '@/lib/utils'
+
+interface SettingRowProps {
+  id: string
+  title: string
+  description: string
+  control: ReactNode
+}
+
+function SettingRow({ id, title, description, control }: SettingRowProps) {
+  return (
+    <div className="flex items-center justify-between gap-lg px-lg py-md">
+      <div className="space-y-0.5">
+        <label htmlFor={id} className="text-sm font-medium">
+          {title}
+        </label>
+        <p className="text-sm text-muted">{description}</p>
+      </div>
+      {control}
+    </div>
+  )
+}
+
+function Field({ id, label, className, ...props }: { id: string; label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div className={cn('space-y-1.5', className)}>
+      <label htmlFor={id} className="text-sm font-medium">
+        {label}
+      </label>
+      <Input id={id} {...props} />
+    </div>
+  )
+}
 
 export function SettingsScreen() {
   return (
-    <Container className="space-y-lg max-w-2xl">
-      {/* Header */}
-      <Section>
-        <H1>Settings</H1>
-        <Small className="text-[var(--semantic-light-color-text-secondary)]">
-          Manage your account and preferences.
-        </Small>
-      </Section>
+    <Container maxWidth="lg" className="space-y-xl">
+      <PageHeader title="Settings" description="Manage your account and preferences." />
 
       {/* Profile */}
-      <Section>
-        <H2>Profile</H2>
-        <Card>
-          <CardHeader>
-            <h3 className="font-semibold">Personal Information</h3>
-          </CardHeader>
-          <CardContent className="space-y-md">
-            <div>
-              <label className="block text-sm font-medium mb-xs">Full Name</label>
-              <Input defaultValue="John Doe" />
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>This information is visible only to you.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-lg">
+          <div className="flex items-center gap-md">
+            <Avatar initials={user.initials} className="size-14 text-base" />
+            <div className="flex gap-sm">
+              <Button variant="secondary" size="sm">Change photo</Button>
+              <Button variant="ghost" size="sm">Remove</Button>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-xs">Email</label>
-              <Input type="email" defaultValue="john@example.com" />
-            </div>
-            <Button variant="primary" className="mt-md">
-              Save Changes
-            </Button>
-          </CardContent>
-        </Card>
-      </Section>
+          </div>
+          <div className="grid gap-md sm:grid-cols-2">
+            <Field id="name" label="Full name" defaultValue={user.name} />
+            <Field id="email" label="Email" type="email" defaultValue={user.email} />
+          </div>
+        </CardContent>
+        <CardFooter className="justify-end gap-sm">
+          <Button variant="ghost">Cancel</Button>
+          <Button>Save changes</Button>
+        </CardFooter>
+      </Card>
 
       {/* Security */}
-      <Section>
-        <H2>Security</H2>
-        <div className="space-y-md">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
-            <CardContent className="p-lg flex justify-between items-center">
-              <div>
-                <h3 className="font-semibold">Change Password</h3>
-                <Small className="text-[var(--semantic-light-color-text-secondary)]">
-                  Update your password regularly
-                </Small>
-              </div>
-              <ChevronRight className="w-5 h-5" />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-lg flex justify-between items-center">
-              <div>
-                <h3 className="font-semibold">Two-Factor Authentication</h3>
-                <Small className="text-[var(--semantic-light-color-text-secondary)]">
-                  Add an extra layer of security
-                </Small>
-              </div>
-              <Switch />
-            </CardContent>
-          </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Security</CardTitle>
+          <CardDescription>Keep your account protected.</CardDescription>
+        </CardHeader>
+        <div className="divide-y divide-border">
+          <SettingRow
+            id="password"
+            title="Password"
+            description="Last changed 3 months ago"
+            control={
+              <Button id="password" variant="secondary" size="sm">
+                Update
+              </Button>
+            }
+          />
+          <SettingRow
+            id="two-factor"
+            title="Two-factor authentication"
+            description="Add an extra layer of security to your account"
+            control={<Switch id="two-factor" />}
+          />
         </div>
-      </Section>
+      </Card>
 
       {/* Preferences */}
-      <Section>
-        <H2>Preferences</H2>
-        <Card>
-          <CardContent className="space-y-md p-lg">
-            <div className="flex justify-between items-center pb-md border-b border-[var(--semantic-light-color-border-default)]">
-              <div>
-                <h3 className="font-semibold">Currency</h3>
-                <Small className="text-[var(--semantic-light-color-text-secondary)]">
-                  Display amounts in
-                </Small>
-              </div>
-              <select className="h-10 px-3 rounded-md border border-[var(--semantic-light-color-border-default)]">
+      <Card>
+        <CardHeader>
+          <CardTitle>Preferences</CardTitle>
+          <CardDescription>Customize how FinSync works for you.</CardDescription>
+        </CardHeader>
+        <div className="divide-y divide-border">
+          <SettingRow
+            id="currency"
+            title="Currency"
+            description="Display amounts in"
+            control={
+              <Select id="currency" className="w-48">
                 <option>R$ Brazilian Real</option>
                 <option>US$ US Dollar</option>
                 <option>€ Euro</option>
-              </select>
-            </div>
-
-            <div className="flex justify-between items-center pb-md border-b border-[var(--semantic-light-color-border-default)]">
-              <div>
-                <h3 className="font-semibold">Notifications</h3>
-                <Small className="text-[var(--semantic-light-color-text-secondary)]">
-                  Receive email updates
-                </Small>
-              </div>
-              <Switch />
-            </div>
-
-            <div className="flex justify-between items-center">
-              <div>
-                <h3 className="font-semibold">Hide Balances</h3>
-                <Small className="text-[var(--semantic-light-color-text-secondary)]">
-                  Show masked values on dashboard
-                </Small>
-              </div>
-              <Switch />
-            </div>
-          </CardContent>
-        </Card>
-      </Section>
+              </Select>
+            }
+          />
+          <SettingRow
+            id="notifications"
+            title="Email notifications"
+            description="Receive weekly summaries and alerts"
+            control={<Switch id="notifications" defaultChecked />}
+          />
+          <SettingRow
+            id="hide-balances"
+            title="Hide balances"
+            description="Mask values on the dashboard by default"
+            control={<Switch id="hide-balances" />}
+          />
+        </div>
+      </Card>
 
       {/* Danger Zone */}
-      <Section>
-        <H2>Danger Zone</H2>
-        <Card className="border-red-200 dark:border-red-900">
-          <CardContent className="p-lg">
-            <p className="text-sm text-[var(--semantic-light-color-text-secondary)] mb-md">
-              Deleting your account is permanent and cannot be undone. All your data will be lost.
+      <Card className="border-danger/30">
+        <CardHeader className="border-danger/20">
+          <CardTitle className="text-danger">Danger zone</CardTitle>
+          <CardDescription>Irreversible actions for your account.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-md sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-0.5">
+            <p className="text-sm font-medium">Delete account</p>
+            <p className="text-sm text-muted">
+              Permanently remove your account and all of its data. This cannot be undone.
             </p>
-            <Button variant="destructive">Delete Account</Button>
-          </CardContent>
-        </Card>
-      </Section>
+          </div>
+          <Button variant="destructive" className="shrink-0">
+            Delete account
+          </Button>
+        </CardContent>
+      </Card>
     </Container>
   )
 }

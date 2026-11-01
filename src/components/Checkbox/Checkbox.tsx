@@ -14,8 +14,8 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
         type="checkbox"
         id={id}
         className={cn(
-          'w-5 h-5 rounded-[var(--primitives-radius-sm)] border border-[var(--semantic-light-color-border-default)] cursor-pointer accent-[var(--semantic-light-color-action-primary)] transition-colors',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--semantic-light-color-border-focus)] focus-visible:ring-offset-2',
+          'w-5 h-5 rounded-[4px] border border-border cursor-pointer accent-primary transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           'disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
@@ -24,7 +24,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       {label && (
         <label
           htmlFor={id}
-          className="text-sm font-medium cursor-pointer select-none text-[var(--semantic-light-color-text-primary)]"
+          className="text-sm font-medium cursor-pointer select-none text-foreground"
         >
           {label}
         </label>

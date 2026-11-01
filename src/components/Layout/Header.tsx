@@ -8,10 +8,7 @@ interface HeaderProps extends React.HTMLAttributes<HTMLElement> {
 const Header = forwardRef<HTMLElement, HeaderProps>(({ children, className, ...props }, ref) => (
   <header
     ref={ref}
-    className={cn(
-      'sticky top-0 z-20 border-b border-[var(--semantic-light-color-border-default)] bg-[var(--semantic-light-color-surface-default)] shadow-sm',
-      className
-    )}
+    className={cn('sticky top-0 z-20 border-b border-border bg-surface/80 backdrop-blur', className)}
     {...props}
   >
     {children}
@@ -28,7 +25,8 @@ const HeaderContent = forwardRef<HTMLDivElement, HeaderContentProps>(
   ({ children, className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex items-center justify-between gap-md p-lg', className)}
+      // Left padding on mobile leaves room for the sidebar toggle
+      className={cn('flex h-16 items-center justify-between gap-md pl-16 pr-lg md:pl-lg', className)}
       {...props}
     >
       {children}
@@ -44,7 +42,7 @@ interface HeaderTitleProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const HeaderTitle = forwardRef<HTMLDivElement, HeaderTitleProps>(
   ({ children, className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex-1', className)} {...props}>
+    <div ref={ref} className={cn('flex min-w-0 flex-1 items-center gap-md', className)} {...props}>
       {children}
     </div>
   )
@@ -58,7 +56,7 @@ interface HeaderActionsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const HeaderActions = forwardRef<HTMLDivElement, HeaderActionsProps>(
   ({ children, className, ...props }, ref) => (
-    <div ref={ref} className={cn('flex items-center gap-md', className)} {...props}>
+    <div ref={ref} className={cn('flex items-center gap-xs', className)} {...props}>
       {children}
     </div>
   )

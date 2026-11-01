@@ -46,7 +46,7 @@ export const Hidden: MonetaryStory = {
 // TransactionItem Stories
 export const Transaction: StoryObj<typeof TransactionItem> = {
   render: () => (
-    <div className="flex flex-col gap-md max-w-md">
+    <div className="flex flex-col gap-md max-w-(--container-md)">
       <TransactionItem
         category="Groceries"
         categoryIcon="🛒"
@@ -94,7 +94,7 @@ export const CreditCardStory: StoryObj<typeof CreditCard> = {
 // BudgetCard Stories
 export const BudgetNormal: StoryObj<typeof BudgetCard> = {
   render: () => (
-    <div className="max-w-sm">
+    <div className="max-w-(--container-sm)">
       <BudgetCard category="Groceries" icon="🛒" spent={450} limit={1000} />
     </div>
   ),
@@ -102,7 +102,7 @@ export const BudgetNormal: StoryObj<typeof BudgetCard> = {
 
 export const BudgetWarning: StoryObj<typeof BudgetCard> = {
   render: () => (
-    <div className="max-w-sm">
+    <div className="max-w-(--container-sm)">
       <BudgetCard category="Entertainment" icon="🎬" spent={800} limit={1000} />
     </div>
   ),
@@ -110,7 +110,7 @@ export const BudgetWarning: StoryObj<typeof BudgetCard> = {
 
 export const BudgetExceeded: StoryObj<typeof BudgetCard> = {
   render: () => (
-    <div className="max-w-sm">
+    <div className="max-w-(--container-sm)">
       <BudgetCard category="Dining" icon="🍽️" spent={1250} limit={1000} />
     </div>
   ),
@@ -118,7 +118,7 @@ export const BudgetExceeded: StoryObj<typeof BudgetCard> = {
 
 export const MultipleBudgets: StoryObj<typeof BudgetCard> = {
   render: () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-md max-w-2xl">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-md max-w-(--container-2xl)">
       <BudgetCard category="Groceries" icon="🛒" spent={450} limit={1000} />
       <BudgetCard category="Transport" icon="🚕" spent={380} limit={500} />
       <BudgetCard category="Entertainment" icon="🎬" spent={800} limit={1000} />

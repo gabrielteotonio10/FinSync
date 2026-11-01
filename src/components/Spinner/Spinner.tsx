@@ -12,9 +12,9 @@ const spinnerVariants = cva(
         lg: 'w-8 h-8',
       },
       color: {
-        primary: 'text-[var(--semantic-light-color-action-primary)]',
+        primary: 'text-primary',
         white: 'text-white',
-        muted: 'text-[var(--semantic-light-color-text-secondary)]',
+        muted: 'text-muted',
       },
     },
     defaultVariants: {
@@ -25,7 +25,7 @@ const spinnerVariants = cva(
 )
 
 interface SpinnerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
     VariantProps<typeof spinnerVariants> {}
 
 const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(

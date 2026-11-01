@@ -9,7 +9,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(({ className, ...props }, ref
   <div
     ref={ref}
     className={cn(
-      'rounded-[var(--primitives-radius-md)] border border-[var(--semantic-light-color-border-default)] bg-[var(--semantic-light-color-surface-raised)] text-[var(--semantic-light-color-text-primary)] shadow-[var(--primitives-shadow-sm)] transition-shadow hover:shadow-[var(--primitives-shadow-md)]',
+      'rounded-lg border border-border bg-surface text-foreground shadow-sm',
       className
     )}
     {...props}
@@ -26,7 +26,7 @@ const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('p-[var(--primitives-spacing-lg)] border-b border-inherit', className)}
+      className={cn('flex flex-col gap-1 border-b border-border px-lg py-md', className)}
       {...props}
     />
   )
@@ -34,13 +34,37 @@ const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
 
 CardHeader.displayName = 'CardHeader'
 
+interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  children: ReactNode
+}
+
+const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} className={cn('text-base font-semibold text-foreground', className)} {...props} />
+  )
+)
+
+CardTitle.displayName = 'CardTitle'
+
+interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children: ReactNode
+}
+
+const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
+  ({ className, ...props }, ref) => (
+    <p ref={ref} className={cn('text-sm text-muted', className)} {...props} />
+  )
+)
+
+CardDescription.displayName = 'CardDescription'
+
 interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode
 }
 
 const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('p-[var(--primitives-spacing-lg)]', className)} {...props} />
+    <div ref={ref} className={cn('p-lg', className)} {...props} />
   )
 )
 
@@ -54,7 +78,7 @@ const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('p-[var(--primitives-spacing-lg)] border-t border-inherit', className)}
+      className={cn('flex items-center border-t border-border px-lg py-md', className)}
       {...props}
     />
   )
@@ -62,4 +86,4 @@ const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
 
 CardFooter.displayName = 'CardFooter'
 
-export { Card, CardHeader, CardContent, CardFooter }
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }

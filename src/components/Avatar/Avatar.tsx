@@ -13,10 +13,7 @@ const Avatar = forwardRef<HTMLImageElement, AvatarProps>(
         <img
           ref={ref}
           src={src}
-          className={cn(
-            'w-10 h-10 rounded-full object-cover border border-[var(--semantic-light-color-border-default)]',
-            className
-          )}
+          className={cn('size-10 rounded-full border border-border object-cover', className)}
           {...props}
         />
       )
@@ -25,7 +22,7 @@ const Avatar = forwardRef<HTMLImageElement, AvatarProps>(
     return (
       <div
         className={cn(
-          'w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm text-white bg-[var(--semantic-light-color-action-primary)]',
+          'flex size-10 shrink-0 items-center justify-center rounded-full bg-primary-soft text-sm font-semibold text-primary-soft-foreground',
           className
         )}
       >

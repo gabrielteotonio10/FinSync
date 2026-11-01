@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import {
   MainLayout,
   Header,
@@ -8,19 +8,29 @@ import {
   Sidebar,
   SidebarHeader,
   SidebarContent,
+  SidebarLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarFooter,
+  Avatar,
   Button,
+  Input,
 } from './components'
 import { ThemeSwitcher } from './components/ThemeSwitcher'
 import { DashboardScreen } from './screens/Dashboard/Dashboard'
 import { TransactionsScreen } from './screens/Transactions/Transactions'
 import { AccountsScreen } from './screens/Accounts/Accounts'
 import { SettingsScreen } from './screens/Settings/Settings'
-import { Home, Wallet, TrendingUp, Settings, LogOut, Bell } from 'lucide-react'
+import { user } from './data/mock'
+import { ArrowLeftRight, Bell, LayoutDashboard, LogOut, Search, Settings, Wallet } from 'lucide-react'
 
-type Screen = 'dashboard' | 'transactions' | 'accounts' | 'settings'
+export type Screen = 'dashboard' | 'transactions' | 'accounts' | 'settings'
+
+const navigation: { id: Screen; label: string; icon: ReactNode }[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard /> },
+  { id: 'accounts', label: 'Accounts', icon: <Wallet /> },
+  { id: 'transactions', label: 'Transactions', icon: <ArrowLeftRight /> },
+]
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('dashboard')
@@ -28,7 +38,7 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 'dashboard':
-        return <DashboardScreen />
+        return <DashboardScreen onNavigate={setCurrentScreen} />
       case 'transactions':
         return <TransactionsScreen />
       case 'accounts':
@@ -36,9 +46,23 @@ export default function App() {
       case 'settings':
         return <SettingsScreen />
       default:
-        return <DashboardScreen />
+        return <DashboardScreen onNavigate={setCurrentScreen} />
     }
   }
+
+  const navItem = (id: Screen, label: string, icon: ReactNode) => (
+    <SidebarMenuItem
+      key={id}
+      href="#"
+      icon={icon}
+      label={label}
+      active={currentScreen === id}
+      onClick={(e) => {
+        e.preventDefault()
+        setCurrentScreen(id)
+      }}
+    />
+  )
 
   return (
     <MainLayout
@@ -46,13 +70,25 @@ export default function App() {
         <Header>
           <HeaderContent>
             <HeaderTitle>
-              <h1 className="text-2xl font-bold">FinSync</h1>
+              <div className="relative hidden w-full max-w-(--container-xs) md:block">
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-subtle" />
+                <Input placeholder="Search..." className="bg-surface-muted/60 pl-9 shadow-none" aria-label="Search" />
+              </div>
             </HeaderTitle>
             <HeaderActions>
-              <button className="p-md hover:bg-gray-100 dark:hover:bg-gray-900 rounded-md transition-colors">
-                <Bell className="w-5 h-5" />
-              </button>
+              <Button variant="ghost" size="icon" aria-label="Notifications" className="relative">
+                <Bell />
+                <span className="absolute right-2 top-2 size-2 rounded-full bg-danger ring-2 ring-surface" />
+              </Button>
               <ThemeSwitcher />
+              <div className="ml-sm hidden h-6 w-px bg-border sm:block" />
+              <button
+                className="ml-xs flex items-center gap-sm rounded-sm p-1 transition-colors hover:bg-surface-muted"
+                onClick={() => setCurrentScreen('settings')}
+                aria-label="Open profile settings"
+              >
+                <Avatar initials={user.initials} className="size-8 text-xs" />
+              </button>
             </HeaderActions>
           </HeaderContent>
         </Header>
@@ -60,57 +96,32 @@ export default function App() {
       sidebar={
         <Sidebar>
           <SidebarHeader>
-            <h2 className="text-lg font-bold">Menu</h2>
+            <div className="flex size-8 items-center justify-center rounded-sm bg-primary text-sm font-bold text-primary-foreground">
+              F
+            </div>
+            <span className="text-lg font-semibold tracking-tight">FinSync</span>
           </SidebarHeader>
           <SidebarContent>
-            <SidebarMenu>
-              <SidebarMenuItem
-                href="#"
-                icon={<Home className="w-4 h-4" />}
-                label="Dashboard"
-                active={currentScreen === 'dashboard'}
-                onClick={(e) => {
-                  e.preventDefault()
-                  setCurrentScreen('dashboard')
-                }}
-              />
-              <SidebarMenuItem
-                href="#"
-                icon={<Wallet className="w-4 h-4" />}
-                label="Accounts"
-                active={currentScreen === 'accounts'}
-                onClick={(e) => {
-                  e.preventDefault()
-                  setCurrentScreen('accounts')
-                }}
-              />
-              <SidebarMenuItem
-                href="#"
-                icon={<TrendingUp className="w-4 h-4" />}
-                label="Transactions"
-                active={currentScreen === 'transactions'}
-                onClick={(e) => {
-                  e.preventDefault()
-                  setCurrentScreen('transactions')
-                }}
-              />
-              <SidebarMenuItem
-                href="#"
-                icon={<Settings className="w-4 h-4" />}
-                label="Settings"
-                active={currentScreen === 'settings'}
-                onClick={(e) => {
-                  e.preventDefault()
-                  setCurrentScreen('settings')
-                }}
-              />
-            </SidebarMenu>
+            <div>
+              <SidebarLabel>Overview</SidebarLabel>
+              <SidebarMenu>{navigation.map((n) => navItem(n.id, n.label, n.icon))}</SidebarMenu>
+            </div>
+            <div>
+              <SidebarLabel>Account</SidebarLabel>
+              <SidebarMenu>{navItem('settings', 'Settings', <Settings />)}</SidebarMenu>
+            </div>
           </SidebarContent>
           <SidebarFooter>
-            <Button variant="ghost" className="w-full justify-start">
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
+            <div className="flex items-center gap-sm">
+              <Avatar initials={user.initials} className="size-9 text-xs" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium">{user.name}</p>
+                <p className="truncate text-xs text-muted">{user.email}</p>
+              </div>
+              <Button variant="ghost" size="icon" aria-label="Log out" title="Log out">
+                <LogOut />
+              </Button>
+            </div>
           </SidebarFooter>
         </Sidebar>
       }

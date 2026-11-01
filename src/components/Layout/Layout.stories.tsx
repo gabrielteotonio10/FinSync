@@ -10,6 +10,7 @@ import {
   SidebarContent,
   SidebarMenu,
   SidebarMenuItem,
+  SidebarFooter,
   Container,
   Grid,
 } from '.'
@@ -45,15 +46,15 @@ export const Dashboard: StoryObj = {
               <h1 className="text-2xl font-bold">FinSync</h1>
             </HeaderTitle>
             <HeaderActions>
-              <div className="hidden md:flex items-center gap-md flex-1 max-w-xs">
-                <Search className="w-4 h-4 text-gray-400" />
+              <div className="hidden md:flex items-center gap-md flex-1 max-w-(--container-xs)">
+                <Search className="w-4 h-4 text-subtle" />
                 <Input
                   type="search"
                   placeholder="Search transactions..."
-                  className="border-0 bg-gray-100 dark:bg-gray-900"
+                  className="border-0 bg-surface-muted"
                 />
               </div>
-              <button className="p-md hover:bg-gray-100 dark:hover:bg-gray-900 rounded-md transition-colors">
+              <button className="p-md hover:bg-surface-muted rounded-md transition-colors">
                 <Bell className="w-5 h-5" />
               </button>
               <ThemeSwitcher />
@@ -105,7 +106,7 @@ export const Dashboard: StoryObj = {
         <div className="space-y-lg">
           <div>
             <h2 className="text-2xl font-bold mb-md">Dashboard</h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted">
               Welcome back to your financial overview
             </p>
           </div>
@@ -113,19 +114,19 @@ export const Dashboard: StoryObj = {
           <Grid cols={3}>
             <Card>
               <CardContent className="p-lg">
-                <p className="text-sm font-medium text-gray-600">Total Balance</p>
+                <p className="text-sm font-medium text-muted">Total Balance</p>
                 <p className="text-3xl font-bold mt-md">R$ 12,450.50</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-lg">
-                <p className="text-sm font-medium text-gray-600">Monthly Income</p>
+                <p className="text-sm font-medium text-muted">Monthly Income</p>
                 <p className="text-3xl font-bold text-green-600 mt-md">R$ 5,250.00</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-lg">
-                <p className="text-sm font-medium text-gray-600">Monthly Expenses</p>
+                <p className="text-sm font-medium text-muted">Monthly Expenses</p>
                 <p className="text-3xl font-bold text-red-600 mt-md">R$ 2,180.25</p>
               </CardContent>
             </Card>
@@ -134,7 +135,7 @@ export const Dashboard: StoryObj = {
           <Card>
             <CardContent className="p-lg">
               <h3 className="font-bold mb-md">Recent Transactions</h3>
-              <div className="space-y-sm text-sm text-gray-600">
+              <div className="space-y-sm text-sm text-muted">
                 <div>Loading transactions...</div>
               </div>
             </CardContent>

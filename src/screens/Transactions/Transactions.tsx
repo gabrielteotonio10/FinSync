@@ -1,106 +1,145 @@
-import { Card, CardContent, Container, Section, Input, Button } from '@/components'
-import { TransactionItem } from '@/components'
-import { H1, H2, Body } from '@/components/Typography/Typography'
-import { Search, Download } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import {
+  Button,
+  Card,
+  CardHeader,
+  Container,
+  Grid,
+  Input,
+  PageHeader,
+  Select,
+  StatCard,
+  TransactionItem,
+} from '@/components'
+import { categoryIcons, transactions } from '@/data/mock'
+import { Clock, Download, Inbox, Plus, Search, TrendingDown, TrendingUp } from 'lucide-react'
+
+const categories = Array.from(new Set(transactions.map((t) => t.category))).sort()
 
 export function TransactionsScreen() {
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('all')
+  const [status, setStatus] = useState('all')
+
+  const filtered = useMemo(
+    () =>
+      transactions.filter(
+        (t) =>
+          (category === 'all' || t.category === category) &&
+          (status === 'all' || t.status === status) &&
+          `${t.description} ${t.category}`.toLowerCase().includes(query.trim().toLowerCase())
+      ),
+    [query, category, status]
+  )
+
+  const income = transactions.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0)
+  const expenses = transactions.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
+  const pending = transactions.filter((t) => t.status === 'pending').reduce((s, t) => s + t.amount, 0)
+
+  const hasFilters = query !== '' || category !== 'all' || status !== 'all'
+
   return (
-    <Container className="space-y-lg">
-      {/* Header */}
-      <Section>
-        <div className="flex justify-between items-start">
-          <div>
-            <H1>Transactions</H1>
-            <Body className="text-[var(--semantic-light-color-text-secondary)]">
-              View and manage all your financial transactions.
-            </Body>
-          </div>
-          <Button variant="secondary" className="gap-md">
-            <Download className="w-4 h-4" />
-            Export
-          </Button>
-        </div>
-      </Section>
+    <Container className="space-y-xl">
+      <PageHeader
+        title="Transactions"
+        description="View and manage all your financial transactions."
+        actions={
+          <>
+            <Button variant="secondary">
+              <Download />
+              Export
+            </Button>
+            <Button>
+              <Plus />
+              Add transaction
+            </Button>
+          </>
+        }
+      />
 
-      {/* Filters */}
+      <Grid cols={3}>
+        <StatCard label="Income" value={income} icon={<TrendingUp />} hint="Last 30 days" />
+        <StatCard label="Expenses" value={expenses} icon={<TrendingDown />} hint="Last 30 days" />
+        <StatCard label="Pending" value={pending} icon={<Clock />} hint="Awaiting confirmation" />
+      </Grid>
+
       <Card>
-        <CardContent className="p-lg">
-          <div className="flex gap-md items-end">
-            <div className="flex-1 relative">
-              <label className="block text-sm font-medium mb-xs">Search</label>
-              <div className="relative">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search transactions..."
-                  className="pl-9"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-xs">Category</label>
-              <select className="h-10 px-3 rounded-md border border-[var(--semantic-light-color-border-default)]">
-                <option>All categories</option>
-                <option>Groceries</option>
-                <option>Transport</option>
-                <option>Entertainment</option>
-              </select>
-            </div>
-            <Button variant="secondary">Filter</Button>
+        {/* Toolbar */}
+        <CardHeader className="flex-col gap-sm sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-subtle" />
+            <Input
+              placeholder="Search transactions..."
+              className="pl-9"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              aria-label="Search transactions"
+            />
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex gap-sm">
+            <Select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              aria-label="Filter by category"
+              className="w-full sm:w-44"
+            >
+              <option value="all">All categories</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </Select>
+            <Select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              aria-label="Filter by status"
+              className="w-full sm:w-36"
+            >
+              <option value="all">All statuses</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+              <option value="failed">Failed</option>
+            </Select>
+          </div>
+        </CardHeader>
 
-      {/* Transaction List */}
-      <Section>
-        <H2>All Transactions</H2>
-        <div className="space-y-md">
-          <TransactionItem
-            category="Groceries"
-            categoryIcon="🛒"
-            description="Mercado Central"
-            amount={125.5}
-            type="expense"
-            status="completed"
-            date="Nov 5"
-          />
-          <TransactionItem
-            category="Salary"
-            categoryIcon="💰"
-            description="Monthly salary"
-            amount={5250.0}
-            type="income"
-            status="completed"
-            date="Nov 1"
-          />
-          <TransactionItem
-            category="Transport"
-            categoryIcon="🚕"
-            description="Uber ride"
-            amount={45.0}
-            type="expense"
-            status="completed"
-            date="Nov 4"
-          />
-          <TransactionItem
-            category="Restaurant"
-            categoryIcon="🍽️"
-            description="Pizza Hut"
-            amount={85.0}
-            type="expense"
-            status="pending"
-            date="Nov 3"
-          />
-          <TransactionItem
-            category="Entertainment"
-            categoryIcon="🎬"
-            description="Netflix subscription"
-            amount={39.9}
-            type="expense"
-            status="completed"
-            date="Nov 2"
-          />
+        {/* List */}
+        {filtered.length > 0 ? (
+          <div className="divide-y divide-border">
+            {filtered.map((t) => (
+              <TransactionItem key={t.id} categoryIcon={categoryIcons[t.category]} {...t} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-sm px-lg py-3xl text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-surface-muted text-muted">
+              <Inbox className="size-5" />
+            </div>
+            <p className="text-sm font-medium">No transactions found</p>
+            <p className="text-sm text-muted">Try a different search or filter.</p>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between border-t border-border px-lg py-md text-sm text-muted">
+          <span>
+            Showing {filtered.length} of {transactions.length} transactions
+          </span>
+          {hasFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setQuery('')
+                setCategory('all')
+                setStatus('all')
+              }}
+            >
+              Clear filters
+            </Button>
+          )}
         </div>
-      </Section>
+      </Card>
     </Container>
   )
 }

@@ -1,38 +1,124 @@
 @import './tokens/generated/variables.css';
 @import './tokens/generated/variables-dark.css';
+@import 'tailwindcss';
+@config '../tailwind.config.ts';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * App-level semantic tokens. They switch with [data-theme] so components
+ * can use a single class (bg-surface, text-muted...) for both themes.
+ */
+:root {
+  --app-bg: #f6f7f9;
+  --app-surface: #ffffff;
+  --app-surface-muted: var(--primitives-color-neutral-100);
+  --app-fg: var(--primitives-color-neutral-900);
+  --app-muted: var(--primitives-color-neutral-600);
+  --app-subtle: var(--primitives-color-neutral-500);
+  --app-border: #e7e7ea;
+  --app-input: var(--primitives-color-neutral-300);
+  --app-primary: var(--primitives-color-primary-600);
+  --app-primary-hover: var(--primitives-color-primary-700);
+  --app-primary-fg: #ffffff;
+  --app-primary-soft: var(--primitives-color-primary-50);
+  --app-primary-soft-fg: var(--primitives-color-primary-600);
+  --app-success: var(--primitives-color-success-600);
+  --app-danger: var(--primitives-color-error-600);
+  --app-warning: #b45309;
+  --app-chart-1: #2a78d6;
+  --app-chart-2: #eb6834;
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --app-bg: #111113;
+  --app-surface: #1c1c1e;
+  --app-surface-muted: #27272a;
+  --app-fg: var(--primitives-color-neutral-50);
+  --app-muted: var(--primitives-color-neutral-400);
+  --app-subtle: #8a8a8f;
+  --app-border: #2e2e32;
+  --app-input: #3f3f46;
+  --app-primary: var(--primitives-color-primary-500);
+  --app-primary-hover: var(--primitives-color-primary-400);
+  --app-primary-fg: #ffffff;
+  --app-primary-soft: rgb(101 132 255 / 0.14);
+  --app-primary-soft-fg: var(--primitives-color-primary-300);
+  --app-success: var(--primitives-color-success-500);
+  --app-danger: var(--primitives-color-error-500);
+  --app-warning: var(--primitives-color-warning-500);
+  --app-chart-1: #3987e5;
+  --app-chart-2: #d95926;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --spacing-xs: var(--primitives-spacing-xs);
+  --spacing-sm: var(--primitives-spacing-sm);
+  --spacing-md: var(--primitives-spacing-md);
+  --spacing-lg: var(--primitives-spacing-lg);
+  --spacing-xl: var(--primitives-spacing-xl);
+  --spacing-2xl: var(--primitives-spacing-2xl);
+  --spacing-3xl: var(--primitives-spacing-3xl);
+  --spacing-4xl: var(--primitives-spacing-4xl);
+
+  --radius-sm: var(--primitives-radius-sm);
+  --radius-md: var(--primitives-radius-md);
+  --radius-lg: var(--primitives-radius-lg);
+  --radius-xl: var(--primitives-radius-xl);
+
+  --shadow-sm: var(--primitives-shadow-sm);
+  --shadow-md: var(--primitives-shadow-md);
+  --shadow-lg: var(--primitives-shadow-lg);
+  --shadow-xl: var(--primitives-shadow-xl);
+
+  --color-background: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-surface-muted: var(--app-surface-muted);
+  --color-foreground: var(--app-fg);
+  --color-muted: var(--app-muted);
+  --color-subtle: var(--app-subtle);
+  --color-border: var(--app-border);
+  --color-input: var(--app-input);
+  --color-ring: var(--app-primary);
+  --color-primary: var(--app-primary);
+  --color-primary-hover: var(--app-primary-hover);
+  --color-primary-foreground: var(--app-primary-fg);
+  --color-primary-soft: var(--app-primary-soft);
+  --color-primary-soft-foreground: var(--app-primary-soft-fg);
+  --color-success: var(--app-success);
+  --color-danger: var(--app-danger);
+  --color-warning: var(--app-warning);
+  --color-chart-1: var(--app-chart-1);
+  --color-chart-2: var(--app-chart-2);
+}
 
 @layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
   body {
-    @apply transition-colors;
-    background-color: var(--semantic-light-color-surface-default);
-    color: var(--semantic-light-color-text-primary);
+    @apply bg-background font-sans text-foreground antialiased;
+    font-feature-settings: 'cv11', 'ss01';
   }
 
-  [data-theme='dark'] {
-    background-color: var(--semantic-dark-color-surface-default);
-    color: var(--semantic-dark-color-text-primary);
+  ::selection {
+    background-color: var(--color-primary-soft);
   }
-
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: var(--semantic-dark-color-surface-default);
-      color: var(--semantic-dark-color-text-primary);
-    }
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
-  }
-
-  h1 { @apply text-4xl; }
-  h2 { @apply text-3xl; }
-  h3 { @apply text-2xl; }
 
   button {
-    @apply cursor-pointer font-medium transition-colors;
+    @apply cursor-pointer;
   }
 }

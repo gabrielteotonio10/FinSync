@@ -12,15 +12,11 @@ const Grid = forwardRef<HTMLDivElement, GridProps>(
       1: 'grid-cols-1',
       2: 'grid-cols-1 md:grid-cols-2',
       3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-      4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+      4: 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4',
     }
 
     return (
-      <div
-        ref={ref}
-        className={cn('grid gap-lg', colsMap[cols], className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('grid gap-lg', colsMap[cols], className)} {...props}>
         {children}
       </div>
     )
@@ -35,20 +31,22 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Container = forwardRef<HTMLDivElement, ContainerProps>(
-  ({ children, maxWidth = 'lg', className, ...props }, ref) => {
+  ({ children, maxWidth = 'xl', className, ...props }, ref) => {
+    // Container widths reference --container-* explicitly: the token spacing
+    // scale (--spacing-sm, --spacing-md...) would otherwise shadow max-w-sm/md.
     const maxWidthMap = {
-      sm: 'max-w-sm',
-      md: 'max-w-md',
-      lg: 'max-w-4xl',
-      xl: 'max-w-6xl',
-      '2xl': 'max-w-7xl',
+      sm: 'max-w-(--container-sm)',
+      md: 'max-w-(--container-md)',
+      lg: 'max-w-(--container-4xl)',
+      xl: 'max-w-(--container-6xl)',
+      '2xl': 'max-w-(--container-7xl)',
       full: 'max-w-full',
     }
 
     return (
       <div
         ref={ref}
-        className={cn('mx-auto px-lg', maxWidthMap[maxWidth], className)}
+        className={cn('mx-auto w-full px-md py-lg sm:px-lg md:py-xl', maxWidthMap[maxWidth], className)}
         {...props}
       >
         {children}
@@ -65,7 +63,7 @@ interface SectionProps extends React.HTMLAttributes<HTMLElement> {
 
 const Section = forwardRef<HTMLElement, SectionProps>(
   ({ children, className, ...props }, ref) => (
-    <section ref={ref} className={cn('py-lg', className)} {...props}>
+    <section ref={ref} className={cn('space-y-md', className)} {...props}>
       {children}
     </section>
   )
@@ -73,4 +71,48 @@ const Section = forwardRef<HTMLElement, SectionProps>(
 
 Section.displayName = 'Section'
 
-export { Grid, Container, Section }
+interface PageHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+  title: ReactNode
+  description?: ReactNode
+  actions?: ReactNode
+}
+
+const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
+  ({ title, description, actions, className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('flex flex-col gap-md sm:flex-row sm:items-end sm:justify-between', className)}
+      {...props}
+    >
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        {description && <p className="text-sm text-muted">{description}</p>}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-sm">{actions}</div>}
+    </div>
+  )
+)
+
+PageHeader.displayName = 'PageHeader'
+
+interface SectionHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+  title: ReactNode
+  description?: ReactNode
+  action?: ReactNode
+}
+
+const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
+  ({ title, description, action, className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex items-end justify-between gap-md', className)} {...props}>
+      <div>
+        <h2 className="text-base font-semibold">{title}</h2>
+        {description && <p className="text-sm text-muted">{description}</p>}
+      </div>
+      {action}
+    </div>
+  )
+)
+
+SectionHeader.displayName = 'SectionHeader'
+
+export { Grid, Container, Section, PageHeader, SectionHeader }

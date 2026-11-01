@@ -1,21 +1,21 @@
-import { forwardRef } from 'react'
+import { forwardRef, ReactNode } from 'react'
+import { CircleAlert, PiggyBank, TriangleAlert } from 'lucide-react'
 import { Card, CardContent } from '../Card/Card'
-import { MonetaryValue } from './MonetaryValue'
 import { Badge } from '../Badge/Badge'
-import { cn } from '@/lib/utils'
+import { cn, formatCurrency } from '@/lib/utils'
 
 interface BudgetCardProps extends React.HTMLAttributes<HTMLDivElement> {
   category: string
   spent: number
   limit: number
-  icon?: string
+  icon?: ReactNode
 }
 
 const BudgetCard = forwardRef<HTMLDivElement, BudgetCardProps>(
-  ({ category, spent, limit, icon = '📊', className, ...props }, ref) => {
+  ({ category, spent, limit, icon = <PiggyBank />, className, ...props }, ref) => {
     const percentage = (spent / limit) * 100
     let status: 'normal' | 'warning' | 'exceeded' = 'normal'
-    let badgeVariant: 'success' | 'warning' | 'error' = 'success'
+    let badgeVariant: 'default' | 'warning' | 'error' = 'default'
 
     if (percentage >= 100) {
       status = 'exceeded'
@@ -27,47 +27,65 @@ const BudgetCard = forwardRef<HTMLDivElement, BudgetCardProps>(
 
     return (
       <Card ref={ref} className={className} {...props}>
-        <CardContent className="p-lg">
-          <div className="flex items-start justify-between mb-md">
-            <div>
-              <p className="text-sm text-[var(--semantic-light-color-text-secondary)]">
-                {icon} {category}
-              </p>
-              <MonetaryValue value={spent} type="expense" className="mt-xs" />
-              <p className="text-xs text-[var(--semantic-light-color-text-secondary)] mt-xs">
-                of
-                <MonetaryValue value={limit} type="neutral" className="ml-xs inline-flex" />
-              </p>
+        <CardContent className="space-y-md">
+          <div className="flex items-start justify-between gap-sm">
+            <div className="flex items-center gap-sm">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-primary-soft text-base text-primary-soft-foreground [&_svg]:size-[18px]">
+                {icon}
+              </div>
+              <p className="text-sm font-medium text-foreground">{category}</p>
             </div>
-            <Badge variant={badgeVariant} className="text-xs">
-              {percentage.toFixed(0)}%
-            </Badge>
+            <Badge variant={badgeVariant}>{percentage.toFixed(0)}%</Badge>
+          </div>
+
+          <div>
+            <p className="text-lg font-semibold tabular-nums tracking-tight">
+              {formatCurrency(spent)}
+            </p>
+            <p className="text-xs text-muted">of {formatCurrency(limit)}</p>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+          <div
+            className="h-2 w-full overflow-hidden rounded-full bg-surface-muted"
+            role="progressbar"
+            aria-valuenow={Math.round(percentage)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`${category} budget used`}
+          >
             <div
               className={cn(
-                'h-full transition-all duration-300',
-                status === 'normal' && 'bg-[var(--semantic-light-color-finance-income)]',
-                status === 'warning' && 'bg-[var(--semantic-light-color-feedback-warning)]',
-                status === 'exceeded' && 'bg-[var(--semantic-light-color-feedback-error)]'
+                'h-full rounded-full transition-all duration-500',
+                status === 'normal' && 'bg-primary',
+                status === 'warning' && 'bg-warning',
+                status === 'exceeded' && 'bg-danger'
               )}
               style={{ width: `${Math.min(percentage, 100)}%` }}
             />
           </div>
 
           {/* Status Message */}
-          {status === 'warning' && (
-            <p className="text-xs text-[var(--semantic-light-color-feedback-warning)] mt-md font-medium">
-              ⚠️ Approaching limit
-            </p>
-          )}
-          {status === 'exceeded' && (
-            <p className="text-xs text-[var(--semantic-light-color-feedback-error)] mt-md font-medium">
-              ✕ Budget exceeded by R$ {(spent - limit).toFixed(2)}
-            </p>
-          )}
+          <p
+            className={cn(
+              'flex items-center gap-1 text-xs font-medium [&_svg]:size-3.5',
+              status === 'normal' && 'text-muted',
+              status === 'warning' && 'text-warning',
+              status === 'exceeded' && 'text-danger'
+            )}
+          >
+            {status === 'normal' && <>{formatCurrency(limit - spent)} left</>}
+            {status === 'warning' && (
+              <>
+                <TriangleAlert /> Approaching limit
+              </>
+            )}
+            {status === 'exceeded' && (
+              <>
+                <CircleAlert /> Over budget by {formatCurrency(spent - limit)}
+              </>
+            )}
+          </p>
         </CardContent>
       </Card>
     )

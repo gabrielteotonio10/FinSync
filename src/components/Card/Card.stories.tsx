@@ -32,7 +32,7 @@ export const WithFooter: Story = {
       </CardHeader>
       <CardContent>
         <p className="text-sm mb-md">Confirm your payment method</p>
-        <p className="text-sm text-gray-600">Visa ending in 4242</p>
+        <p className="text-sm text-muted">Visa ending in 4242</p>
       </CardContent>
       <CardFooter className="flex gap-md">
         <Button variant="secondary" className="flex-1">

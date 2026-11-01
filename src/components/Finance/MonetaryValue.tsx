@@ -1,15 +1,14 @@
-import { forwardRef, ReactNode } from 'react'
+import { forwardRef, ReactNode, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import { useState } from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { cn } from '@/lib/utils'
+import { cn, formatCurrency } from '@/lib/utils'
 
-const valueVariants = cva('font-mono font-bold text-lg transition-colors', {
+const valueVariants = cva('font-semibold tabular-nums tracking-tight transition-colors', {
   variants: {
     type: {
-      income: 'text-[var(--semantic-light-color-finance-income)]',
-      expense: 'text-[var(--semantic-light-color-finance-expense)]',
-      neutral: 'text-[var(--semantic-light-color-finance-neutral)]',
+      income: 'text-success',
+      expense: 'text-danger',
+      neutral: 'text-foreground',
     },
   },
   defaultVariants: {
@@ -18,50 +17,57 @@ const valueVariants = cva('font-mono font-bold text-lg transition-colors', {
 })
 
 interface MonetaryValueProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof valueVariants> {
   value: number
   type?: 'income' | 'expense' | 'neutral'
   hideable?: boolean
+  /** Prefix income with "+" and expenses with "−" */
+  showSign?: boolean
   prefix?: string
   suffix?: string
   children?: ReactNode
 }
 
-const MonetaryValue = forwardRef<HTMLDivElement, MonetaryValueProps>(
+const MonetaryValue = forwardRef<HTMLSpanElement, MonetaryValueProps>(
   (
-    { value, type = 'neutral', hideable = false, prefix = 'R$ ', suffix = '', className, ...props },
+    {
+      value,
+      type = 'neutral',
+      hideable = false,
+      showSign = false,
+      prefix = 'R$ ',
+      suffix = '',
+      className,
+      ...props
+    },
     ref
   ) => {
     const [hidden, setHidden] = useState(false)
-    const isNegative = value < 0
-    const displayValue = Math.abs(value).toFixed(2)
-    const sign = isNegative && type !== 'neutral' ? '-' : ''
+    let sign = ''
+    if (type !== 'neutral' && value < 0) sign = '−'
+    else if (showSign && type === 'income') sign = '+'
 
     return (
-      <div
+      <span
         ref={ref}
-        className={cn('inline-flex items-center gap-sm', className)}
+        className={cn('inline-flex items-center gap-sm text-lg', className)}
         {...props}
       >
-        <div className={cn(valueVariants({ type }))}>
-          {sign}
-          {hidden ? '••••••' : `${prefix}${displayValue}${suffix}`}
-        </div>
+        <span className={cn(valueVariants({ type }))}>
+          {hidden ? `${prefix}••••••` : `${sign}${formatCurrency(Math.abs(value), prefix)}${suffix}`}
+        </span>
         {hideable && (
           <button
+            type="button"
             onClick={() => setHidden(!hidden)}
-            className="p-xs hover:bg-gray-100 dark:hover:bg-gray-900 rounded transition-colors"
+            className="rounded-sm p-1 text-subtle transition-colors hover:bg-surface-muted hover:text-foreground"
             aria-label={hidden ? 'Show value' : 'Hide value'}
           >
-            {hidden ? (
-              <EyeOff className="w-4 h-4" />
-            ) : (
-              <Eye className="w-4 h-4" />
-            )}
+            {hidden ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         )}
-      </div>
+      </span>
     )
   }
 )

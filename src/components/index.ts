@@ -6,8 +6,12 @@ export type { ButtonProps } from './Button/Button'
 export { Input } from './Input/Input'
 export type { InputProps } from './Input/Input'
 
+// Select
+export { Select } from './Select/Select'
+export type { SelectProps } from './Select/Select'
+
 // Card
-export { Card, CardHeader, CardContent, CardFooter } from './Card/Card'
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card/Card'
 
 // Badge
 export { Badge, badgeVariants } from './Badge/Badge'
@@ -35,16 +39,20 @@ export { MonetaryValue } from './Finance/MonetaryValue'
 export { TransactionItem } from './Finance/TransactionItem'
 export { CreditCard } from './Finance/CreditCard'
 export { BudgetCard } from './Finance/BudgetCard'
+export { StatCard } from './Finance/StatCard'
+export { CashFlowChart } from './Finance/CashFlowChart'
+export type { CashFlowPoint } from './Finance/CashFlowChart'
 
 // Layout Components
 export {
   Sidebar,
   SidebarHeader,
   SidebarContent,
+  SidebarLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarFooter,
 } from './Layout/Sidebar'
 export { Header, HeaderContent, HeaderTitle, HeaderActions } from './Layout/Header'
-export { Grid, Container, Section } from './Layout/Grid'
+export { Grid, Container, Section, PageHeader, SectionHeader } from './Layout/Grid'
 export { MainLayout } from './Layout/MainLayout'

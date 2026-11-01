@@ -12,25 +12,20 @@ const MainLayout = forwardRef<HTMLDivElement, MainLayoutProps>(
   ({ header, sidebar, children, footer, className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex flex-col h-screen bg-[var(--semantic-light-color-surface-default)]', className)}
+      className={cn('flex h-screen overflow-hidden bg-background text-foreground', className)}
       {...props}
     >
-      {/* Header */}
-      {header && <div className="flex-shrink-0">{header}</div>}
+      {/* Sidebar */}
+      {sidebar}
 
-      {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        {sidebar && <div className="flex-shrink-0">{sidebar}</div>}
+      {/* Header + Content */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {header && <div className="shrink-0">{header}</div>}
 
-        {/* Content Area */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="h-full">{children}</div>
-        </main>
+        <main className="flex-1 overflow-y-auto">{children}</main>
+
+        {footer && <div className="shrink-0">{footer}</div>}
       </div>
-
-      {/* Footer */}
-      {footer && <div className="flex-shrink-0">{footer}</div>}
     </div>
   )
 )
