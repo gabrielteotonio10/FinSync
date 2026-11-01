@@ -1,29 +1,38 @@
+@import './tokens/generated/variables.css';
+@import './tokens/generated/variables-dark.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --color-surface-default: 0 0% 100%;
-    --color-surface-raised: 0 0% 96%;
-    --color-surface-overlay: 0 0% 100%;
-    --color-text-primary: 0 0% 0%;
-    --color-text-secondary: 0 0% 38%;
-    --color-text-disabled: 0 0% 68%;
+  body {
+    @apply transition-colors;
+    background-color: var(--semantic-light-color-surface-default);
+    color: var(--semantic-light-color-text-primary);
+  }
+
+  [data-theme='dark'] {
+    background-color: var(--semantic-dark-color-surface-default);
+    color: var(--semantic-dark-color-text-primary);
   }
 
   @media (prefers-color-scheme: dark) {
-    :root {
-      --color-surface-default: 0 0% 8%;
-      --color-surface-raised: 0 0% 12%;
-      --color-surface-overlay: 0 0% 16%;
-      --color-text-primary: 0 0% 100%;
-      --color-text-secondary: 0 0% 70%;
-      --color-text-disabled: 0 0% 45%;
+    body {
+      background-color: var(--semantic-dark-color-surface-default);
+      color: var(--semantic-dark-color-text-primary);
     }
   }
 
-  body {
-    @apply bg-surface-default text-text-primary transition-colors;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+
+  h1 { @apply text-4xl; }
+  h2 { @apply text-3xl; }
+  h3 { @apply text-2xl; }
+
+  button {
+    @apply cursor-pointer font-medium transition-colors;
   }
 }
