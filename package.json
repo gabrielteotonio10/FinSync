@@ -36,6 +36,7 @@
     "@storybook/addon-themes": "^10.6.5",
     "@storybook/react": "^10.6.5",
     "@storybook/test": "^8.6.15",
+    "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/react": "^19.3.0",
