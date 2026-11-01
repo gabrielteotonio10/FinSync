@@ -35,3 +35,16 @@ export { MonetaryValue } from './Finance/MonetaryValue'
 export { TransactionItem } from './Finance/TransactionItem'
 export { CreditCard } from './Finance/CreditCard'
 export { BudgetCard } from './Finance/BudgetCard'
+
+// Layout Components
+export {
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarFooter,
+} from './Layout/Sidebar'
+export { Header, HeaderContent, HeaderTitle, HeaderActions } from './Layout/Header'
+export { Grid, Container, Section } from './Layout/Grid'
+export { MainLayout } from './Layout/MainLayout'
