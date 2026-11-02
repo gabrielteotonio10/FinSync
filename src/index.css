@@ -28,6 +28,11 @@
   --app-warning: #b45309;
   --app-chart-1: #2a78d6;
   --app-chart-2: #eb6834;
+  --app-chart-3: #0d9488;
+  --brand-navy: #101c42;
+  --brand-royal: #2055f5;
+  --brand-cyan: #15b2f7;
+  --brand-aqua: #8efcf6;
   color-scheme: light;
 }
 
@@ -50,6 +55,7 @@
   --app-warning: var(--primitives-color-warning-500);
   --app-chart-1: #3987e5;
   --app-chart-2: #d95926;
+  --app-chart-3: #2dd4bf;
   color-scheme: dark;
 }
 
@@ -94,6 +100,7 @@
   --color-warning: var(--app-warning);
   --color-chart-1: var(--app-chart-1);
   --color-chart-2: var(--app-chart-2);
+  --color-chart-3: var(--app-chart-3);
 }
 
 @layer base {
@@ -120,5 +127,54 @@
 
   button {
     @apply cursor-pointer;
+  }
+}
+
+/* Overlay motion (dialogs, sheets, popovers, toasts) */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
   }
 }

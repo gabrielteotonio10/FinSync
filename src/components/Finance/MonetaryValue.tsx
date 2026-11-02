@@ -1,6 +1,7 @@
 import { forwardRef, ReactNode, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import { useLanguage } from '@/i18n'
 import { cn, formatCurrency } from '@/lib/utils'
 
 const valueVariants = cva('font-semibold tabular-nums tracking-tight transition-colors', {
@@ -44,6 +45,7 @@ const MonetaryValue = forwardRef<HTMLSpanElement, MonetaryValueProps>(
     ref
   ) => {
     const [hidden, setHidden] = useState(false)
+    const { t } = useLanguage()
     let sign = ''
     if (type !== 'neutral' && value < 0) sign = '−'
     else if (showSign && type === 'income') sign = '+'
@@ -62,7 +64,7 @@ const MonetaryValue = forwardRef<HTMLSpanElement, MonetaryValueProps>(
             type="button"
             onClick={() => setHidden(!hidden)}
             className="rounded-sm p-1 text-subtle transition-colors hover:bg-surface-muted hover:text-foreground"
-            aria-label={hidden ? 'Show value' : 'Hide value'}
+            aria-label={hidden ? t.finance.showValue : t.finance.hideValue}
           >
             {hidden ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>

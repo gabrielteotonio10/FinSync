@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -13,6 +13,9 @@
         var t = localStorage.getItem('theme')
         var dark = t === 'dark' || ((!t || t === 'system') && matchMedia('(prefers-color-scheme: dark)').matches)
         if (dark) document.documentElement.setAttribute('data-theme', 'dark')
+        var l = localStorage.getItem('language')
+        var langMap = { pt: 'pt-BR', en: 'en', es: 'es' }
+        if (l && langMap[l]) document.documentElement.lang = langMap[l]
       } catch (e) {}
     </script>
   </head>

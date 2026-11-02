@@ -1,4 +1,5 @@
 import { forwardRef, ReactNode } from 'react'
+import { ArrowLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -75,16 +76,28 @@ interface PageHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'ti
   title: ReactNode
   description?: ReactNode
   actions?: ReactNode
+  /** Renders a back link above the title (detail screens) */
+  onBack?: () => void
+  backLabel?: string
 }
 
 const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
-  ({ title, description, actions, className, ...props }, ref) => (
+  ({ title, description, actions, onBack, backLabel, className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn('flex flex-col gap-md sm:flex-row sm:items-end sm:justify-between', className)}
       {...props}
     >
-      <div className="space-y-1">
+      <div className="min-w-0 space-y-1">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="-ml-1 mb-xs inline-flex items-center gap-1 rounded-sm px-1 py-0.5 text-sm font-medium text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ArrowLeft className="size-4" />
+            {backLabel}
+          </button>
+        )}
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         {description && <p className="text-sm text-muted">{description}</p>}
       </div>

@@ -1,4 +1,5 @@
 import { forwardRef } from 'react'
+import { useLanguage } from '@/i18n'
 import { cn, formatCurrency } from '@/lib/utils'
 
 interface CreditCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -24,6 +25,7 @@ const CreditCard = forwardRef<HTMLDivElement, CreditCardProps>(
     },
     ref
   ) => {
+    const { t } = useLanguage()
     const expiryDisplay = `${String(expiryMonth).padStart(2, '0')}/${String(expiryYear % 100).padStart(2, '0')}`
 
     return (
@@ -46,7 +48,7 @@ const CreditCard = forwardRef<HTMLDivElement, CreditCardProps>(
           <div>
             {balance !== undefined && (
               <>
-                <p className="text-xs text-white/60">Current balance</p>
+                <p className="text-xs text-white/60">{t.finance.currentBalance}</p>
                 <p className="text-xl font-semibold tabular-nums tracking-tight">
                   {formatCurrency(balance)}
                 </p>
@@ -67,11 +69,11 @@ const CreditCard = forwardRef<HTMLDivElement, CreditCardProps>(
         {/* Bottom: Cardholder & Expiry */}
         <div className="relative flex items-end justify-between">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-white/60">Cardholder</p>
+            <p className="text-[10px] uppercase tracking-wider text-white/60">{t.finance.cardholder}</p>
             <p className="text-sm font-medium">{cardholderName}</p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] uppercase tracking-wider text-white/60">Expires</p>
+            <p className="text-[10px] uppercase tracking-wider text-white/60">{t.finance.expires}</p>
             <p className="font-mono text-sm">{expiryDisplay}</p>
           </div>
         </div>

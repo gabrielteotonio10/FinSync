@@ -2,6 +2,7 @@ import { forwardRef, ReactNode } from 'react'
 import { Check, Clock, Receipt, X } from 'lucide-react'
 import { Badge } from '../Badge/Badge'
 import { MonetaryValue } from './MonetaryValue'
+import { useLanguage } from '@/i18n'
 import { cn } from '@/lib/utils'
 
 interface TransactionItemProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -12,17 +13,21 @@ interface TransactionItemProps extends React.HTMLAttributes<HTMLDivElement> {
   type: 'income' | 'expense'
   status?: 'pending' | 'completed' | 'failed'
   date?: string
+  cardId?: string
+  accountId?: string
+  time?: string
 }
 
 const statusConfig = {
-  pending: { variant: 'warning', label: 'Pending', Icon: Clock },
-  completed: { variant: 'success', label: 'Completed', Icon: Check },
-  failed: { variant: 'error', label: 'Failed', Icon: X },
+  pending: { variant: 'warning', Icon: Clock },
+  completed: { variant: 'success', Icon: Check },
+  failed: { variant: 'error', Icon: X },
 } as const
 
 const TransactionItem = forwardRef<HTMLDivElement, TransactionItemProps>(
   (
     {
+      id,
       category,
       categoryIcon = <Receipt />,
       description,
@@ -31,19 +36,41 @@ const TransactionItem = forwardRef<HTMLDivElement, TransactionItemProps>(
       status,
       date,
       className,
+      onClick,
+      cardId: _cardId,
+      accountId: _accountId,
+      time: _time,
       ...props
     },
     ref
   ) => {
+    const { t } = useLanguage()
     const statusInfo = status ? statusConfig[status] : null
+    const displayDescription = (id && t.transactionDescriptions[id]) || description
+    const displayCategory = t.categories[category] ?? category
+    const displayDate = date ? t.formatShortDate(date) : undefined
 
     return (
       <div
         ref={ref}
+        id={id}
         className={cn(
           'flex items-center gap-md px-lg py-md transition-colors hover:bg-surface-muted/60',
+          onClick &&
+            'cursor-pointer focus-visible:bg-surface-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring',
           className
         )}
+        {...(onClick && {
+          onClick,
+          role: 'button',
+          tabIndex: 0,
+          onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              e.currentTarget.click()
+            }
+          },
+        })}
         {...props}
       >
         {/* Category icon */}
@@ -58,18 +85,18 @@ const TransactionItem = forwardRef<HTMLDivElement, TransactionItemProps>(
 
         {/* Description */}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-foreground">{description}</p>
+          <p className="truncate text-sm font-medium text-foreground">{displayDescription}</p>
           <p className="truncate text-xs text-muted">
-            {category}
-            {date && ` · ${date}`}
+            {displayCategory}
+            {displayDate && ` · ${displayDate}`}
           </p>
         </div>
 
         {/* Status */}
-        {statusInfo && (
+        {statusInfo && status && (
           <Badge variant={statusInfo.variant} className="hidden sm:inline-flex">
             <statusInfo.Icon />
-            {statusInfo.label}
+            {t.statuses[status]}
           </Badge>
         )}
 

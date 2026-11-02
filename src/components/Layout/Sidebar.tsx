@@ -1,5 +1,6 @@
 import { forwardRef, ReactNode, useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import { useLanguage } from '@/i18n'
 import { cn } from '@/lib/utils'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -11,6 +12,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
   ({ children, defaultOpen = false, className, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(defaultOpen)
+    const { t } = useLanguage()
 
     return (
       <>
@@ -18,7 +20,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="fixed left-3 top-3 z-50 flex size-10 items-center justify-center rounded-sm text-muted transition-colors hover:bg-surface-muted hover:text-foreground md:hidden"
-          aria-label="Toggle sidebar"
+          aria-label={t.nav.toggleSidebar}
           aria-expanded={isOpen}
         >
           {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -126,11 +128,13 @@ interface SidebarMenuItemProps extends React.HTMLAttributes<HTMLAnchorElement> {
   active?: boolean
   icon?: ReactNode
   label: string
+  /** Highlight pill shown at the end of the item (e.g. "New") */
+  badge?: ReactNode
   children?: ReactNode
 }
 
 const SidebarMenuItem = forwardRef<HTMLAnchorElement, SidebarMenuItemProps>(
-  ({ href, active = false, icon, label, className, ...props }, ref) => (
+  ({ href, active = false, icon, label, badge, className, ...props }, ref) => (
     <a
       ref={ref}
       href={href}
@@ -146,6 +150,11 @@ const SidebarMenuItem = forwardRef<HTMLAnchorElement, SidebarMenuItemProps>(
     >
       {icon && <span className="flex shrink-0">{icon}</span>}
       <span className="flex-1">{label}</span>
+      {badge && (
+        <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold uppercase leading-none text-primary-foreground">
+          {badge}
+        </span>
+      )}
     </a>
   )
 )

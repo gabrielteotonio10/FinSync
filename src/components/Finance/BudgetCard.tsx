@@ -2,6 +2,7 @@ import { forwardRef, ReactNode } from 'react'
 import { CircleAlert, PiggyBank, TriangleAlert } from 'lucide-react'
 import { Card, CardContent } from '../Card/Card'
 import { Badge } from '../Badge/Badge'
+import { useLanguage } from '@/i18n'
 import { cn, formatCurrency } from '@/lib/utils'
 
 interface BudgetCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -13,6 +14,8 @@ interface BudgetCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const BudgetCard = forwardRef<HTMLDivElement, BudgetCardProps>(
   ({ category, spent, limit, icon = <PiggyBank />, className, ...props }, ref) => {
+    const { t } = useLanguage()
+    const displayCategory = t.categories[category] ?? category
     const percentage = (spent / limit) * 100
     let status: 'normal' | 'warning' | 'exceeded' = 'normal'
     let badgeVariant: 'default' | 'warning' | 'error' = 'default'
@@ -33,7 +36,7 @@ const BudgetCard = forwardRef<HTMLDivElement, BudgetCardProps>(
               <div className="flex size-9 shrink-0 items-center justify-center rounded-sm bg-primary-soft text-base text-primary-soft-foreground [&_svg]:size-[18px]">
                 {icon}
               </div>
-              <p className="text-sm font-medium text-foreground">{category}</p>
+              <p className="text-sm font-medium text-foreground">{displayCategory}</p>
             </div>
             <Badge variant={badgeVariant}>{percentage.toFixed(0)}%</Badge>
           </div>
@@ -42,7 +45,7 @@ const BudgetCard = forwardRef<HTMLDivElement, BudgetCardProps>(
             <p className="text-lg font-semibold tabular-nums tracking-tight">
               {formatCurrency(spent)}
             </p>
-            <p className="text-xs text-muted">of {formatCurrency(limit)}</p>
+            <p className="text-xs text-muted">{t.finance.ofLimit(formatCurrency(limit))}</p>
           </div>
 
           {/* Progress Bar */}
@@ -52,7 +55,7 @@ const BudgetCard = forwardRef<HTMLDivElement, BudgetCardProps>(
             aria-valuenow={Math.round(percentage)}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label={`${category} budget used`}
+            aria-label={t.finance.budgetUsedAria(displayCategory)}
           >
             <div
               className={cn(
@@ -74,15 +77,15 @@ const BudgetCard = forwardRef<HTMLDivElement, BudgetCardProps>(
               status === 'exceeded' && 'text-danger'
             )}
           >
-            {status === 'normal' && <>{formatCurrency(limit - spent)} left</>}
+            {status === 'normal' && <>{t.finance.left(formatCurrency(limit - spent))}</>}
             {status === 'warning' && (
               <>
-                <TriangleAlert /> Approaching limit
+                <TriangleAlert /> {t.finance.approachingLimit}
               </>
             )}
             {status === 'exceeded' && (
               <>
-                <CircleAlert /> Over budget by {formatCurrency(spent - limit)}
+                <CircleAlert /> {t.finance.overBudgetBy(formatCurrency(spent - limit))}
               </>
             )}
           </p>

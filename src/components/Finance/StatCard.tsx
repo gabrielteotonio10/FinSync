@@ -14,11 +14,13 @@ interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   increaseIsGood?: boolean
   hint?: string
   hideable?: boolean
+  /** Colors the value (and shows "−" for losses); neutral by default */
+  valueType?: 'income' | 'expense' | 'neutral'
 }
 
 const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
   (
-    { label, value, icon, change, increaseIsGood = true, hint, hideable, className, ...props },
+    { label, value, icon, change, increaseIsGood = true, hint, hideable, valueType, className, ...props },
     ref
   ) => {
     const isUp = (change ?? 0) >= 0
@@ -35,7 +37,7 @@ const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
               </div>
             )}
           </div>
-          <MonetaryValue value={value} hideable={hideable} className="text-2xl" />
+          <MonetaryValue value={value} type={valueType} hideable={hideable} className="text-2xl" />
           {(change !== undefined || hint) && (
             <p className="flex items-center gap-1.5 text-xs text-muted">
               {change !== undefined && (
